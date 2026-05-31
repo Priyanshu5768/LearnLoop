@@ -116,14 +116,14 @@ CREATE TABLE IF NOT EXISTS check_ins (
 
 -- --------------------------
 -- Sample Data
--- Note: Passwords below are bcrypt hashes of "password123"
+-- Note: Passwords below are bcrypt hashes of "password@123"
 -- --------------------------
 INSERT INTO users (name, email, password, gender, bio) VALUES
-('Poonam',  'poonam@example.com',   '$2b$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'male', 'CS student passionate about JavaScript and web development.'),
-('Priyanshu Kumar',  'priyanshu@example.com',  '$2b$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'male', 'UI/UX design enthusiast. Love turning ideas into clean interfaces.'),
-('Carlos Rivera', 'carlos@example.com', '$2b$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'male', 'Bilingual student — native Spanish speaker, learning Python.'),
-('Aisha Patel',   'aisha@example.com',  '$2b$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'female', 'Data science student who loves teaching statistics and Excel.'),
-('Prateeksha',     'prateeksha@example.com',   '$2b$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'female', 'Music and photography enthusiast looking to learn coding.');
+('Poonam',  'poonam@example.com',   '$2a$10$6XRy/8RPcmOLljkjRpIfGO0HkPBPR7L9rmST2.noqorl.ru1yNWdC', 'male', 'CS student passionate about JavaScript and web development.'),
+('Priyanshu Kumar',  'priyanshu@example.com',  '$2a$10$6XRy/8RPcmOLljkjRpIfGO0HkPBPR7L9rmST2.noqorl.ru1yNWdC', 'male', 'UI/UX design enthusiast. Love turning ideas into clean interfaces.'),
+('Carlos Rivera', 'carlos@example.com', '$2a$10$6XRy/8RPcmOLljkjRpIfGO0HkPBPR7L9rmST2.noqorl.ru1yNWdCi', 'male', 'Bilingual student — native Spanish speaker, learning Python.'),
+('Aisha Patel',   'aisha@example.com',  '$2a$10$6XRy/8RPcmOLljkjRpIfGO0HkPBPR7L9rmST2.noqorl.ru1yNWdC', 'female', 'Data science student who loves teaching statistics and Excel.'),
+
 
 INSERT INTO skills (user_id, skill_name, category, skill_type, description) VALUES
 (1, 'JavaScript',          'Programming',    'teach', 'From basics to async/await. I can help with DOM, events, and project building.'),
