@@ -1,0 +1,23 @@
+{
+  "name": "learn-loop",
+  "version": "1.0.0",
+  "description": "Peer-to-peer skill exchange platform for students",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "dotenv": "^16.3.1",
+    "mysql2": "^3.6.0",
+    "pptxgenjs": "^4.0.1"
+  },
+  "keywords": [
+    "skill-swap",
+    "peer-learning",
+    "students"
+  ],
+  "author": "Learn Loop Team",
+  "license": "MIT"
+}
