@@ -1,5 +1,5 @@
 # Learn Loop - Peer-to-Peer Skill Exchange Platform
->  A full-stack peer-to-peer learning platform enabling students to exchange skills, collaborate through real-time chat, share study resources, and build credibility via reviews and badges. Features structured skill matching, request-based learning workflows, and engagement tracking. Built using Node.js, MySQL, and Bootstrap 5.
+>**LearnLoop is a project I built to solve a real problem — students have skills others need, but no easy way to connect. So I built a platform where you can teach what you know and learn what you don't — no money, just skill exchange.**
 
 ---
 
@@ -14,6 +14,7 @@
 | 📁 **Resource Sharing** | Upload and share files (PDFs, images, code, notes) per exchange |
 | ⭐ **Reviews & Ratings** | 1–5 star rating system with comments after exchanges |
 | 🎮 **Gamification** | Daily check-ins, points system, and progression badges |
+| 🔔 **Email Notifications** | Async Bull/Redis job queue — notifies users on new requests and acceptances |
 
 ---
 
@@ -22,17 +23,20 @@
 ### Running Locally
 
 ```bash
-# Clone or download this repository
+ Clone or download this repository
 cd learn-loop
 
-# Install dependencies
+ Install dependencies
 npm install
 
-# Import database schema
+ Import database schema
 mysql -u root < database/learnloop.sql
 
-# Start the server
+ Start the server
 npm start
+
+ Start the notification worker (separate terminal)
+npm run worker
 ```
 
 Then open **http://localhost:3000** in your browser.
@@ -51,19 +55,25 @@ Both Mark Complete → Leave a Review → Earn Points & Badges
 
 ### 2. Completion System
 ```javascript
-// Both users must approve for full completion
+ Both users must approve for full completion
 if (completedByRequester && completedByProvider) {
   status = 'completed';
 } else {
-  status = 'accepted'; // waiting for other user
+  status = 'accepted'; 
 }
 ```
 
-### 3. Gamification
-```javascript
+### 3. Async Notification System
+```
+User sends request → API adds job to Bull Queue → Redis (Upstash) stores job
+Background Worker picks up job → Nodemailer sends HTML email via Gmail SMTP
+```
+
+### 4. Gamification
+```
 POINTS_PER_CHECKIN = 5;
-Badge Rules: 10pts → 'First Steps',  25pts → 'Active Learner',
-             50pts → 'Knowledge Seeker',  100pts → 'Skill Master'
+Badge Rules: 10pts → First Steps,  25pts → Active Learner,
+             50pts → Knowledge Seeker,  100pts → Skill Master
 ```
 
 ---
@@ -73,36 +83,40 @@ Badge Rules: 10pts → 'First Steps',  25pts → 'Active Learner',
 ```
 learn-loop/
 ├── config/
-│   └── db.js                    # MySQL connection pool
+│   └── db.js                     MySQL connection pool
 ├── database/
-│   └── learnloop.sql            # Schema + sample data
+│   └── learnloop.sql             Schema + sample data
 ├── public/
 │   ├── css/
-│   │   └── style.css            # Glassmorphism stylesheet
+│   │   └── style.css            Glassmorphism stylesheet
 │   ├── js/
-│   │   └── main.js              # Frontend app logic
-│   ├── uploads/                 # User-uploaded files
-│   ├── index.html               # Landing page
-│   ├── login.html               # Login page
-│   ├── register.html            # Registration page
-│   ├── dashboard.html           # User dashboard
-│   ├── browse.html              # Skill browsing with filters
-│   ├── add-skill.html           # Add a new skill
-│   ├── exchange.html            # Exchange request management
-│   ├── chat.html                # Messaging & resource sharing
-│   └── profile.html             # Profile & gamification stats
+│   │   └── main.js               Frontend app logic
+│   ├── uploads/                  User-uploaded files
+│   ├── index.html                Landing page
+│   ├── login.html                Login page
+│   ├── register.html             Registration page
+│   ├── dashboard.html            User dashboard
+│   ├── browse.html               Skill browsing with filters
+│   ├── add-skill.html            Add a new skill
+│   ├── exchange.html             Exchange request management
+│   ├── chat.html                 Messaging & resource sharing
+│   └── profile.html              Profile & gamification stats
+├── queues/
+│   └── notificationQueue.js      Bull queue definition (Redis-backed)
 ├── routes/
-│   ├── auth.js                  # Auth endpoints
-│   ├── skills.js                # Skill CRUD
-│   ├── exchange.js              # Exchange request flow
-│   ├── messages.js              # Chat messaging
-│   ├── reviews.js               # Rating system
-│   ├── resources.js             # File sharing
-│   └── gamify.js                # Gamification
-├── sessions.js                  # In-memory session store
-├── server.js                    # HTTP server entry point
+│   ├── auth.js                   Auth endpoints
+│   ├── skills.js                 Skill CRUD
+│   ├── exchange.js               Exchange request flow + queue producer
+│   ├── messages.js               Chat messaging
+│   ├── reviews.js                Rating system
+│   ├── resources.js              File sharing
+│   └── gamify.js                 Gamification
+├── workers/
+│   └── notificationWorker.js     Bull queue consumer — sends HTML emails
+├── sessions.js                   In-memory session store
+├── server.js                     HTTP server entry point
 ├── package.json
-├── .env
+├── .env                          Environment variables (not committed)
 └── README.md
 ```
 
@@ -115,6 +129,9 @@ learn-loop/
 | Node.js | Backend runtime (vanilla http module) |
 | MySQL 8.0 | Relational database |
 | bcryptjs | Password hashing |
+| Bull | Redis-backed async job queue |
+| Nodemailer | Email transport via Gmail SMTP |
+| Upstash Redis | Cloud Redis instance (job store) |
 | Bootstrap 5.3 | Frontend UI framework |
 | Vanilla JavaScript | Frontend logic |
 
@@ -130,21 +147,29 @@ learn-loop/
 ### Setup
 
 ```bash
-# 1. Install dependencies
+ 1. Install dependencies
 npm install
 
-# 2. Import the database
+ 2. Import the database
 mysql -u root < database/learnloop.sql
 
-# 3. Configure environment (.env)
-#    DB_HOST=localhost
-#    DB_USER=root
-#    DB_PASSWORD=
-#    DB_NAME=learnloop
-#    PORT=3000
+ 3. Configure environment (.env)
+    DB_HOST=localhost
+    DB_USER=root
+    DB_PASSWORD=
+    DB_NAME=learnloop
+    PORT=3000
+    REDIS_HOST=your_upstash_host
+    REDIS_PORT=6379
+    REDIS_PASSWORD=your_upstash_password
+    EMAIL_USER=your_gmail@gmail.com
+    EMAIL_PASS=your_gmail_app_password
 
-# 4. Start the server
+ 4. Start the server
 npm start
+
+ 5. Start the notification worker (separate terminal)
+npm run worker
 ```
 
 ### Sample Accounts (password: `password@123`)
@@ -153,43 +178,6 @@ npm start
 |------|-------|
 | Poonam | poonam@example.com |
 | Priyanshu Kumar | priyanshu@example.com |
-| Carlos Rivera | carlos@example.com |
-| Aisha Patel | aisha@example.com |
-
----
-
-## 🖼️ Screenshots
-
-### Landing Page
-
-<img width="1910" height="997" alt="image" src="https://github.com/user-attachments/assets/dd3d7096-dddf-421e-9acb-911fb438dd95" />
-
-
-### Browse Skills
-
-<img width="1909" height="1006" alt="image" src="https://github.com/user-attachments/assets/9fd6e534-2cfe-482a-a357-dc6dd7f09f04" />
-
-
-### Dashboard
-
-<img width="1908" height="987" alt="image" src="https://github.com/user-attachments/assets/2784d3a1-869a-4a53-8bd9-48084e26188c" />
-
-
-### Exchange Requests
-
-<img width="1914" height="994" alt="image" src="https://github.com/user-attachments/assets/9310aa5b-ef07-44e2-a8d4-44047781cfc7" />
-
-
-### Chat & Resources
-
-<img width="1898" height="988" alt="image" src="https://github.com/user-attachments/assets/578e1597-9754-4c70-980f-ae853b211554" />
-
-
-### Profile & Gamification
-
-<img width="1896" height="996" alt="image" src="https://github.com/user-attachments/assets/2ef69ddc-dd93-4240-be04-94cec96257ed" />
-
-
 ---
 
 ## 📡 API Endpoints
@@ -264,6 +252,7 @@ This is a **Web Technologies Project** as a part of my B-Tech in Computer Scienc
 - Bootstrap 5.3 for the UI framework
 - Google Fonts (Poppins) for typography
 - bcryptjs for secure password hashing
+- Bull & Upstash Redis for async job queue
 
 ---
 
