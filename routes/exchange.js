@@ -1,4 +1,5 @@
 const db = require('../config/db');
+const notificationQueue = require('../queues/notificationQueue');
 
 function send(res, status, data) {
   res.writeHead(status, { 'Content-Type': 'application/json' });
@@ -23,6 +24,34 @@ module.exports = async function exchangeRoutes(ctx, route, method) {
         'INSERT INTO exchange_requests (requester_id, provider_id, skill_id, message) VALUES (?, ?, ?, ?)',
         [session.data.userId, provider_id, skill_id, message || '']
       );
+
+      // ── Notify provider via Bull Queue ──────────────────────────────────
+      try {
+        const [providerRows] = await db.query(
+          'SELECT email, name FROM users WHERE id = ?',
+          [provider_id]
+        );
+        const [skillRows] = await db.query(
+          'SELECT skill_name FROM skills WHERE id = ?',
+          [skill_id]
+        );
+
+        if (providerRows.length && skillRows.length) {
+          await notificationQueue.add({
+            recipientEmail: providerRows[0].email,
+            senderName:     session.data.name,
+            skillName:      skillRows[0].skill_name
+          }, {
+            attempts:         3,
+            backoff:          5000,
+            removeOnComplete: true
+          });
+        }
+      } catch (qErr) {
+        console.error('[queue] Notification failed (non-fatal):', qErr.message);
+      }
+      // ───────────────────────────────────────────────────────────────────
+
       return send(res, 201, { success: true, requestId: result.insertId });
     } catch (err) {
       console.error('[exchange request]', err.message);
@@ -59,10 +88,11 @@ module.exports = async function exchangeRoutes(ctx, route, method) {
   }
 
   // ── PUT /api/exchange/:id/accept  or  /reject ────────────────────────────
-  const actionMatch = route.match(/^\/(\d+)\/(accept|reject)$/);
+ const actionMatch = route.match(/^\/(\d+)\/(accept|reject)$/);
   if (actionMatch && method === 'PUT') {
     const requestId = parseInt(actionMatch[1], 10);
-    const status    = actionMatch[2] === 'accept' ? 'accepted' : 'rejected';
+    const action    = actionMatch[2];
+    const status    = action === 'accept' ? 'accepted' : 'rejected';
     try {
       const [result] = await db.query(
         'UPDATE exchange_requests SET status = ? WHERE id = ? AND provider_id = ?',
@@ -70,6 +100,36 @@ module.exports = async function exchangeRoutes(ctx, route, method) {
       );
       if (result.affectedRows === 0)
         return send(res, 404, { error: 'Request not found or not yours.' });
+
+      // ── Notify requester if accepted ────────────────────────────────────
+      if (action === 'accept') {
+        try {
+          const [exRows] = await db.query(
+            `SELECT er.requester_id, u.email, u.name, s.skill_name
+             FROM exchange_requests er
+             JOIN users u  ON er.requester_id = u.id
+             JOIN skills s ON er.skill_id     = s.id
+             WHERE er.id = ?`,
+            [requestId]
+          );
+          if (exRows.length) {
+            await notificationQueue.add({
+              recipientEmail: exRows[0].email,
+              senderName:     session.data.name,
+              skillName:      exRows[0].skill_name,
+              type:           'accepted'
+            }, {
+              attempts:         3,
+              backoff:          5000,
+              removeOnComplete: true
+            });
+          }
+        } catch (qErr) {
+          console.error('[queue] Accept notification failed (non-fatal):', qErr.message);
+        }
+      }
+      // ───────────────────────────────────────────────────────────────────
+
       return send(res, 200, { success: true });
     } catch (err) {
       return send(res, 500, { error: 'Server error.' });
@@ -88,38 +148,35 @@ module.exports = async function exchangeRoutes(ctx, route, method) {
       if (!ex.length)
         return send(res, 404, { error: 'Exchange not found.' });
 
-      const exchange = ex[0];
+      const exchange   = ex[0];
       const isRequester = exchange.requester_id === session.data.userId;
-      const isProvider = exchange.provider_id === session.data.userId;
+      const isProvider  = exchange.provider_id  === session.data.userId;
 
       if (exchange.status !== 'accepted')
         return send(res, 400, { error: 'Exchange must be accepted first.' });
 
-      // Toggle completion status
       let completedByRequester = exchange.completed_by_requester;
-      let completedByProvider = exchange.completed_by_provider;
+      let completedByProvider  = exchange.completed_by_provider;
 
       if (isRequester) completedByRequester = completedByRequester ? 0 : 1;
-      if (isProvider) completedByProvider = completedByProvider ? 0 : 1;
+      if (isProvider)  completedByProvider  = completedByProvider  ? 0 : 1;
 
       let newStatus = 'accepted';
-      if (completedByRequester && completedByProvider) {
-        newStatus = 'completed';
-      }
+      if (completedByRequester && completedByProvider) newStatus = 'completed';
 
       await db.query(
         'UPDATE exchange_requests SET completed_by_requester = ?, completed_by_provider = ?, status = ?, completed_at = ? WHERE id = ?',
         [completedByRequester, completedByProvider, newStatus, newStatus === 'completed' ? new Date() : null, requestId]
       );
 
-      const myCompleted = isRequester ? completedByRequester : completedByProvider;
-      const otherCompleted = isRequester ? completedByProvider : completedByRequester;
+      const myCompleted    = isRequester ? completedByRequester : completedByProvider;
+      const otherCompleted = isRequester ? completedByProvider  : completedByRequester;
 
-      return send(res, 200, { 
-        success: true, 
-        completed: myCompleted ? true : false,
-        bothCompleted: completedByRequester && completedByProvider,
-        status: newStatus,
+      return send(res, 200, {
+        success:        true,
+        completed:      myCompleted    ? true : false,
+        bothCompleted:  completedByRequester && completedByProvider,
+        status:         newStatus,
         waitingForOther: !otherCompleted
       });
     } catch (err) {
