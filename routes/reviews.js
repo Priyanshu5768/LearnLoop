@@ -12,7 +12,6 @@ module.exports = async function reviewsRoutes(ctx, route, method) {
 
   const userId = session.data.userId;
 
-  // ── POST /api/reviews ─────────────────────────────────────────────────────
   if ((route === '' || route === '/') && method === 'POST') {
     const { exchange_id, reviewee_id, rating, comment } = body;
     
@@ -46,7 +45,6 @@ module.exports = async function reviewsRoutes(ctx, route, method) {
     }
   }
 
-  // ── GET /api/reviews/user/:userId ─────────────────────────────────────────
   const userReviewMatch = route.match(/^\/user\/(\d+)$/);
   if (userReviewMatch && method === 'GET') {
     const targetUserId = parseInt(userReviewMatch[1], 10);
