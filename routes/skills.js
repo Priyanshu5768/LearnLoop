@@ -8,7 +8,6 @@ function send(res, status, data) {
 module.exports = async function skillsRoutes(ctx, route, method) {
   const { res, body, session, query } = ctx;
 
-  // ── GET /api/skills  (browse with optional ?q=&category=&type=) ──────────
   if ((route === '' || route === '/') && method === 'GET') {
     const { q, category, type } = query;
     let sql = `SELECT s.*, u.name AS user_name, u.gender
@@ -40,7 +39,6 @@ module.exports = async function skillsRoutes(ctx, route, method) {
     }
   }
 
-  // ── GET /api/skills/my ───────────────────────────────────────────────────
   if (route === '/my' && method === 'GET') {
     if (!session) return send(res, 401, { error: 'Not authenticated.' });
     try {
@@ -54,7 +52,6 @@ module.exports = async function skillsRoutes(ctx, route, method) {
     }
   }
 
-  // ── POST /api/skills ─────────────────────────────────────────────────────
   if ((route === '' || route === '/') && method === 'POST') {
     if (!session) return send(res, 401, { error: 'Not authenticated.' });
     const { skill_name, category, skill_type, description } = body;
@@ -73,7 +70,6 @@ module.exports = async function skillsRoutes(ctx, route, method) {
     }
   }
 
-  // ── DELETE /api/skills/:id ───────────────────────────────────────────────
   const deleteMatch = route.match(/^\/(\d+)$/);
   if (deleteMatch && method === 'DELETE') {
     if (!session) return send(res, 401, { error: 'Not authenticated.' });
