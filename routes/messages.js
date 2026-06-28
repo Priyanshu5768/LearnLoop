@@ -12,7 +12,6 @@ module.exports = async function messagesRoutes(ctx, route, method) {
 
   const userId = session.data.userId;
 
-  // ── GET /api/messages/conversations ──────────────────────────────────────
   if (route === '/conversations' && method === 'GET') {
     try {
       const [convos] = await db.query(`
@@ -37,7 +36,6 @@ module.exports = async function messagesRoutes(ctx, route, method) {
     }
   }
 
-  // ── GET /api/messages/:exchangeId ─────────────────────────────────────────
   const msgMatch = route.match(/^\/(\d+)$/);
   if (msgMatch && method === 'GET') {
     const exchangeId = parseInt(msgMatch[1], 10);
@@ -56,7 +54,6 @@ module.exports = async function messagesRoutes(ctx, route, method) {
     }
   }
 
-  // ── POST /api/messages/:exchangeId ────────────────────────────────────────
   if (msgMatch && method === 'POST') {
     const exchangeId = parseInt(msgMatch[1], 10);
     const { message } = body;
