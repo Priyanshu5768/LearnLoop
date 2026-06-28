@@ -11,7 +11,6 @@ function send(res, status, data) {
 module.exports = async function authRoutes(ctx, route, method) {
   const { res, body, session } = ctx;
 
-  // ── POST /api/auth/register ──────────────────────────────────────────────
   if (route === '/register' && method === 'POST') {
     const { name, email, password, gender } = body;
     if (!name || !email || !password)
@@ -37,7 +36,6 @@ module.exports = async function authRoutes(ctx, route, method) {
     }
   }
 
-  // ── POST /api/auth/login ─────────────────────────────────────────────────
   if (route === '/login' && method === 'POST') {
     const { email, password } = body;
     if (!email || !password)
@@ -61,14 +59,12 @@ module.exports = async function authRoutes(ctx, route, method) {
     }
   }
 
-  // ── POST /api/auth/logout ────────────────────────────────────────────────
   if (route === '/logout' && method === 'POST') {
     if (session) delete sessions[session.id];
     res.setHeader('Set-Cookie', 'session_id=; HttpOnly; Path=/; Max-Age=0');
     return send(res, 200, { success: true });
   }
 
-  // ── GET /api/auth/me ─────────────────────────────────────────────────────
   if (route === '/me' && method === 'GET') {
     if (!session) return send(res, 401, { error: 'Not authenticated.' });
 
@@ -84,7 +80,6 @@ module.exports = async function authRoutes(ctx, route, method) {
     }
   }
 
-  // ── PUT /api/auth/profile ────────────────────────────────────────────────
   if (route === '/profile' && method === 'PUT') {
     if (!session) return send(res, 401, { error: 'Not authenticated.' });
     const { name, bio, gender } = body;
@@ -101,7 +96,6 @@ module.exports = async function authRoutes(ctx, route, method) {
     }
   }
 
-  // ── PUT /api/auth/password ──────────────────────────────────────────────
   if (route === '/password' && method === 'PUT') {
     if (!session) return send(res, 401, { error: 'Not authenticated.' });
     const { currentPassword, newPassword } = body;
