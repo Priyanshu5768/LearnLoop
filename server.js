@@ -17,7 +17,7 @@ const gamifyRoutes = require('./routes/gamify');
 const PORT      = process.env.PORT || 3000;
 const PUBLIC_DIR = path.join(__dirname, 'public');
 
-// ── MIME types for static file serving ──────────────────────────────────────
+
 const MIME = {
   '.html': 'text/html',
   '.css' : 'text/css',
@@ -32,7 +32,7 @@ const MIME = {
   '.woff2': 'font/woff2'
 };
 
-// Helper: parse JSON request body 
+
 function parseBody(req) {
   return new Promise((resolve) => {
     let raw = '';
@@ -44,7 +44,7 @@ function parseBody(req) {
   });
 }
 
-// Helper: read session from cookie
+
 function getSession(req) {
   const cookieHeader = req.headers.cookie || '';
   const match = cookieHeader.match(/session_id=([^;]+)/);
@@ -54,13 +54,13 @@ function getSession(req) {
   return null;
 }
 
-// ── Helper: send a simple JSON response ─────────────────────────────────────
+
 function sendJSON(res, status, data) {
   res.writeHead(status, { 'Content-Type': 'application/json' });
   res.end(JSON.stringify(data));
 }
 
-// ── Helper: serve a static file ─────────────────────────────────────────────
+
 function serveFile(res, filePath) {
   fs.readFile(filePath, (err, data) => {
     if (err) {
@@ -74,7 +74,7 @@ function serveFile(res, filePath) {
   });
 }
 
-// ── Main server ──────────────────────────────────────────────────────────────
+
 const server = http.createServer(async (req, res) => {
   const parsed   = url.parse(req.url, true);
   const pathname = parsed.pathname;
@@ -91,8 +91,8 @@ const server = http.createServer(async (req, res) => {
     return;
   }
 
-  // ── API Routes ─────────────────────────────────────────────────────────────
-  if (pathname.startsWith('/api/')) {
+
+    if (pathname.startsWith('/api/')) {
     const body    = await parseBody(req);
     const session = getSession(req);
     const ctx     = { req, res, body, session, query: parsed.query };
@@ -134,8 +134,8 @@ const server = http.createServer(async (req, res) => {
     return sendJSON(res, 404, { error: 'API endpoint not found.' });
   }
 
-  // ── Static file serving from /public ─────────────────────────────────────
-  let filePath = path.join(PUBLIC_DIR, pathname === '/' ? 'index.html' : pathname);
+
+    let filePath = path.join(PUBLIC_DIR, pathname === '/' ? 'index.html' : pathname);
 
   // If the path has no extension, try appending .html (nice URLs)
   if (!path.extname(filePath)) filePath += '.html';
@@ -143,7 +143,7 @@ const server = http.createServer(async (req, res) => {
   serveFile(res, filePath);
 });
 
-// ── Start ────────────────────────────────────────────────────────────────────
+// ── Start 
 server.listen(PORT, () => {
   console.log(`\n  ✦ Learn Loop is running at http://localhost:${PORT}`);
   console.log(`  ✦ Open http://localhost:${PORT} in your browser\n`);
