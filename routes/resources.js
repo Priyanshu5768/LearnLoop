@@ -14,7 +14,6 @@ module.exports = async function resourcesRoutes(ctx, route, method) {
 
   const userId = session.data.userId;
 
-  // ── GET /api/resources/:exchangeId ─────────────────────────────────────────
   const exMatch = route.match(/^\/(\d+)$/);
   if (exMatch && method === 'GET') {
     const exchangeId = parseInt(exMatch[1], 10);
@@ -41,7 +40,6 @@ module.exports = async function resourcesRoutes(ctx, route, method) {
     }
   }
 
-  // ── POST /api/resources/:exchangeId ───────────────────────────────────────
   if (exMatch && method === 'POST') {
     const exchangeId = parseInt(exMatch[1], 10);
     const { filename, mimeType, data: base64Data, description } = body;
@@ -107,7 +105,6 @@ module.exports = async function resourcesRoutes(ctx, route, method) {
     }
   }
 
-  // ── DELETE /api/resources/:id ─────────────────────────────────────────────
   const delMatch = route.match(/^\/delete\/(\d+)$/);
   if (delMatch && method === 'DELETE') {
     const resourceId = parseInt(delMatch[1], 10);
