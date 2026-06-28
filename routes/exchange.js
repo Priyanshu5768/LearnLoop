@@ -11,7 +11,6 @@ module.exports = async function exchangeRoutes(ctx, route, method) {
 
   if (!session) return send(res, 401, { error: 'Not authenticated.' });
 
-  // ── POST /api/exchange/request ────────────────────────────────────────────
   if (route === '/request' && method === 'POST') {
     const { provider_id, skill_id, message } = body;
     if (!provider_id || !skill_id)
@@ -25,7 +24,6 @@ module.exports = async function exchangeRoutes(ctx, route, method) {
         [session.data.userId, provider_id, skill_id, message || '']
       );
 
-      // ── Notify provider via Bull Queue ──────────────────────────────────
       try {
         const [providerRows] = await db.query(
           'SELECT email, name FROM users WHERE id = ?',
@@ -50,7 +48,6 @@ module.exports = async function exchangeRoutes(ctx, route, method) {
       } catch (qErr) {
         console.error('[queue] Notification failed (non-fatal):', qErr.message);
       }
-      // ───────────────────────────────────────────────────────────────────
 
       return send(res, 201, { success: true, requestId: result.insertId });
     } catch (err) {
@@ -59,7 +56,6 @@ module.exports = async function exchangeRoutes(ctx, route, method) {
     }
   }
 
-  // ── GET /api/exchange/my ─────────────────────────────────────────────────
   if (route === '/my' && method === 'GET') {
     try {
       const [sent] = await db.query(
@@ -87,7 +83,6 @@ module.exports = async function exchangeRoutes(ctx, route, method) {
     }
   }
 
-  // ── PUT /api/exchange/:id/accept  or  /reject ────────────────────────────
  const actionMatch = route.match(/^\/(\d+)\/(accept|reject)$/);
   if (actionMatch && method === 'PUT') {
     const requestId = parseInt(actionMatch[1], 10);
@@ -101,7 +96,6 @@ module.exports = async function exchangeRoutes(ctx, route, method) {
       if (result.affectedRows === 0)
         return send(res, 404, { error: 'Request not found or not yours.' });
 
-      // ── Notify requester if accepted ────────────────────────────────────
       if (action === 'accept') {
         try {
           const [exRows] = await db.query(
@@ -128,7 +122,6 @@ module.exports = async function exchangeRoutes(ctx, route, method) {
           console.error('[queue] Accept notification failed (non-fatal):', qErr.message);
         }
       }
-      // ───────────────────────────────────────────────────────────────────
 
       return send(res, 200, { success: true });
     } catch (err) {
@@ -136,7 +129,6 @@ module.exports = async function exchangeRoutes(ctx, route, method) {
     }
   }
 
-  // ── PUT /api/exchange/:id/complete ───────────────────────────────────────
   const completeMatch = route.match(/^\/(\d+)\/complete$/);
   if (completeMatch && method === 'PUT') {
     const requestId = parseInt(completeMatch[1], 10);
