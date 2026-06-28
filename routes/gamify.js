@@ -12,7 +12,6 @@ module.exports = async function gamificationRoutes(ctx, route, method) {
 
   const userId = session.data.userId;
 
-  // ── POST /api/gamify/checkin/:exchangeId ──────────────────────────────────
   const checkinMatch = route.match(/^\/checkin\/(\d+)$/);
   if (checkinMatch && method === 'POST') {
     const exchangeId = parseInt(checkinMatch[1], 10);
@@ -83,7 +82,6 @@ module.exports = async function gamificationRoutes(ctx, route, method) {
     }
   }
 
-  // ── GET /api/gamify/stats ──────────────────────────────────────────────────
   if (route === '/stats' && method === 'GET') {
     try {
       const [[user]] = await db.query('SELECT points, badges FROM users WHERE id = ?', [userId]);
