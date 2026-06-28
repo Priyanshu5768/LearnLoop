@@ -1,14 +1,9 @@
--- ============================================
 --  Learn Loop - Database Schema
 --  Import this file into MySQL before running
--- ============================================
 
 CREATE DATABASE IF NOT EXISTS learnloop;
 USE learnloop;
 
--- --------------------------
--- Table: users
--- --------------------------
 CREATE TABLE IF NOT EXISTS users (
   id         INT AUTO_INCREMENT PRIMARY KEY,
   name       VARCHAR(100)  NOT NULL,
@@ -22,9 +17,7 @@ CREATE TABLE IF NOT EXISTS users (
   created_at TIMESTAMP     DEFAULT CURRENT_TIMESTAMP
 );
 
--- --------------------------
--- Table: skills
--- --------------------------
+
 CREATE TABLE IF NOT EXISTS skills (
   id          INT AUTO_INCREMENT PRIMARY KEY,
   user_id     INT          NOT NULL,
@@ -36,9 +29,7 @@ CREATE TABLE IF NOT EXISTS skills (
   FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
 
--- --------------------------
--- Table: exchange_requests
--- --------------------------
+
 CREATE TABLE IF NOT EXISTS exchange_requests (
   id                        INT AUTO_INCREMENT PRIMARY KEY,
   requester_id              INT NOT NULL,
@@ -55,9 +46,7 @@ CREATE TABLE IF NOT EXISTS exchange_requests (
   FOREIGN KEY (skill_id)     REFERENCES skills(id) ON DELETE CASCADE
 );
 
--- --------------------------
--- Table: messages
--- --------------------------
+
 CREATE TABLE IF NOT EXISTS messages (
   id              INT AUTO_INCREMENT PRIMARY KEY,
   exchange_id     INT NOT NULL,
@@ -68,9 +57,7 @@ CREATE TABLE IF NOT EXISTS messages (
   FOREIGN KEY (sender_id)   REFERENCES users(id) ON DELETE CASCADE
 );
 
--- --------------------------
--- Table: reviews
--- --------------------------
+
 CREATE TABLE IF NOT EXISTS reviews (
   id           INT AUTO_INCREMENT PRIMARY KEY,
   exchange_id  INT NOT NULL,
@@ -84,9 +71,7 @@ CREATE TABLE IF NOT EXISTS reviews (
   FOREIGN KEY (reviewee_id) REFERENCES users(id) ON DELETE CASCADE
 );
 
--- --------------------------
--- Table: resources
--- --------------------------
+
 CREATE TABLE IF NOT EXISTS resources (
   id           INT AUTO_INCREMENT PRIMARY KEY,
   exchange_id  INT NOT NULL,
@@ -101,9 +86,7 @@ CREATE TABLE IF NOT EXISTS resources (
   FOREIGN KEY (sender_id)   REFERENCES users(id) ON DELETE CASCADE
 );
 
--- --------------------------
--- Table: check_ins (gamification)
--- --------------------------
+
 CREATE TABLE IF NOT EXISTS check_ins (
   id           INT AUTO_INCREMENT PRIMARY KEY,
   exchange_id  INT NOT NULL,
@@ -114,10 +97,9 @@ CREATE TABLE IF NOT EXISTS check_ins (
   FOREIGN KEY (user_id)    REFERENCES users(id) ON DELETE CASCADE
 );
 
--- --------------------------
+
 -- Sample Data
 -- Note: Passwords below are bcrypt hashes of "password@123"
--- --------------------------
 INSERT INTO users (name, email, password, gender, bio) VALUES
 ('Poonam',  'poonam@example.com',   '$2a$10$6XRy/8RPcmOLljkjRpIfGO0HkPBPR7L9rmST2.noqorl.ru1yNWdC', 'male', 'CS student passionate about JavaScript and web development.'),
 ('Priyanshu Kumar',  'priyanshu@example.com',  '$2a$10$6XRy/8RPcmOLljkjRpIfGO0HkPBPR7L9rmST2.noqorl.ru1yNWdC', 'male', 'UI/UX design enthusiast. Love turning ideas into clean interfaces.'),
