@@ -1,5 +1,5 @@
 
-/*── CSS Variables ─────────────────────────────────────────── */
+/* CSS Variables*/
 :root {
   --primary:        #667eea;
   --secondary:      #764ba2;
@@ -15,7 +15,6 @@
   --transition:     all 0.3s ease;
 }
 
-/* ── Reset / Base ──────────────────────────────────────────── */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 body {
@@ -31,19 +30,17 @@ a:hover { color: inherit; }
 
 h1, h2, h3, h4, h5, h6 { font-weight: 700; }
 
-/* ── Scrollbar ─────────────────────────────────────────────── */
 ::-webkit-scrollbar { width: 7px; }
 ::-webkit-scrollbar-track { background: rgba(255,255,255,0.08); }
 ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.28); border-radius: 4px; }
 
-/* ── Utility ───────────────────────────────────────────────── */
 .text-white-75  { color: rgba(255,255,255,0.75) !important; }
 .text-white-50  { color: rgba(255,255,255,0.50) !important; }
 .fw-600 { font-weight: 600; }
 .fw-700 { font-weight: 700; }
 .fw-800 { font-weight: 800; }
 
-/* ── Glassmorphism Card ────────────────────────────────────── */
+/*Glassmorphism Card*/
 .glass-card {
   background:      var(--glass-bg);
   backdrop-filter: blur(14px);
@@ -53,7 +50,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 700; }
   box-shadow:      var(--glass-shadow);
 }
 
-/* ── Navbar ────────────────────────────────────────────────── */
+
 .navbar-glass {
   background:      rgba(255,255,255,0.10) !important;
   backdrop-filter: blur(20px);
@@ -77,7 +74,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 700; }
 }
 .navbar .nav-link:hover { color: #fff !important; }
 
-/* ── Buttons ───────────────────────────────────────────────── */
+
 .btn-gradient {
   background:  linear-gradient(45deg, #f093fb, #f5576c);
   border:      none;
@@ -128,7 +125,6 @@ h1, h2, h3, h4, h5, h6 { font-weight: 700; }
 }
 .btn-glass:hover { background: rgba(255,255,255,0.22); color: #fff; }
 
-/* ── Form Controls ─────────────────────────────────────────── */
 .form-control-glass,
 .form-select-glass {
   background:   rgba(255,255,255,0.10) !important;
@@ -153,7 +149,6 @@ h1, h2, h3, h4, h5, h6 { font-weight: 700; }
 
 label { font-weight: 500; font-size: 0.88rem; color: rgba(255,255,255,0.85); margin-bottom: 6px; display: block; }
 
-/* ── Alert ─────────────────────────────────────────────────── */
 .alert-glass {
   background:    rgba(255,255,255,0.12);
   border:        1px solid rgba(255,255,255,0.28);
@@ -171,7 +166,6 @@ label { font-weight: 500; font-size: 0.88rem; color: rgba(255,255,255,0.85); mar
   border-color: rgba(245,87,108,0.45);
 }
 
-/* ── Badges ────────────────────────────────────────────────── */
 .badge-teach {
   background: linear-gradient(45deg, #11998e, #38ef7d) !important;
   color: #fff !important;
@@ -192,7 +186,6 @@ label { font-weight: 500; font-size: 0.88rem; color: rgba(255,255,255,0.85); mar
   padding:       6px 18px;
 }
 
-/* ── Hero Section ──────────────────────────────────────────── */
 .hero-section {
   min-height:    100vh;
   display:       flex;
@@ -247,7 +240,6 @@ label { font-weight: 500; font-size: 0.88rem; color: rgba(255,255,255,0.85); mar
   flex-shrink:     0;
 }
 
-/* ── Decorative Shapes ─────────────────────────────────────── */
 .shape {
   position:      absolute;
   border-radius: 50%;
@@ -258,7 +250,6 @@ label { font-weight: 500; font-size: 0.88rem; color: rgba(255,255,255,0.85); mar
 .shape-2 { width: 200px; height: 200px; bottom: 15%; left: 4%; animation: float 9s ease-in-out infinite 2s; }
 .shape-3 { width: 140px; height: 140px; top: 55%;  right: 28%; animation: float 6s ease-in-out infinite 4s; }
 
-/* ── Stats ─────────────────────────────────────────────────── */
 .stat-number {
   font-size:   2.6rem;
   font-weight: 800;
@@ -269,7 +260,6 @@ label { font-weight: 500; font-size: 0.88rem; color: rgba(255,255,255,0.85); mar
   line-height: 1.1;
 }
 
-/* ── Features ──────────────────────────────────────────────── */
 .feature-card { transition: var(--transition); }
 .feature-card:hover { transform: translateY(-6px); }
 .feature-icon {
@@ -278,7 +268,6 @@ label { font-weight: 500; font-size: 0.88rem; color: rgba(255,255,255,0.85); mar
   margin:          0 auto 0.5rem;
 }
 
-/* ── Steps (How It Works) ──────────────────────────────────── */
 .step-number {
   width:           44px;
   height:          44px;
@@ -293,7 +282,6 @@ label { font-weight: 500; font-size: 0.88rem; color: rgba(255,255,255,0.85); mar
   box-shadow:      0 4px 14px rgba(240,147,251,0.4);
 }
 
-/* ── Skill Cards (Browse Page) ─────────────────────────────── */
 .skill-card { transition: var(--transition); }
 .skill-card:hover { transform: translateY(-5px); box-shadow: 0 14px 40px rgba(31,38,135,0.45); }
 
@@ -312,7 +300,6 @@ label { font-weight: 500; font-size: 0.88rem; color: rgba(255,255,255,0.85); mar
   border:          2px solid rgba(255,255,255,0.3);
 }
 
-/* ── Category Filter Pills ─────────────────────────────────── */
 .filter-pill {
   background:    rgba(255,255,255,0.10);
   border:        1px solid rgba(255,255,255,0.25);
@@ -332,7 +319,6 @@ label { font-weight: 500; font-size: 0.88rem; color: rgba(255,255,255,0.85); mar
   color:        #fff;
 }
 
-/* ── Dashboard Sidebar ─────────────────────────────────────── */
 .sidebar {
   background:    rgba(0,0,0,0.12);
   backdrop-filter: blur(12px);
@@ -360,7 +346,6 @@ label { font-weight: 500; font-size: 0.88rem; color: rgba(255,255,255,0.85); mar
 }
 .sidebar .nav-link i { font-size: 1.1rem; }
 
-/* ── Dashboard Stat Cards ──────────────────────────────────── */
 .stat-card-dash {
   padding: 1.4rem 1.6rem;
   transition: var(--transition);
@@ -382,7 +367,6 @@ label { font-weight: 500; font-size: 0.88rem; color: rgba(255,255,255,0.85); mar
   margin-top: 4px;
 }
 
-/* ── Profile Avatar ────────────────────────────────────────── */
 .profile-avatar {
   width:           90px;
   height:          90px;
@@ -399,7 +383,6 @@ label { font-weight: 500; font-size: 0.88rem; color: rgba(255,255,255,0.85); mar
   box-shadow:      0 4px 20px rgba(240,147,251,0.35);
 }
 
-/* ── Exchange Request Cards ────────────────────────────────── */
 .request-card {
   border-left: 4px solid;
   border-radius: 0 var(--radius-sm) var(--radius-sm) 0 !important;
@@ -414,7 +397,6 @@ label { font-weight: 500; font-size: 0.88rem; color: rgba(255,255,255,0.85); mar
 .status-badge-accepted { background: rgba(56,239,125,0.20); color: #38ef7d; border: 1px solid rgba(56,239,125,0.40); border-radius: 50px; padding: 3px 12px; font-size: 0.78rem; font-weight: 600; }
 .status-badge-rejected { background: rgba(245,87,108,0.20); color: #f5576c; border: 1px solid rgba(245,87,108,0.40); border-radius: 50px; padding: 3px 12px; font-size: 0.78rem; font-weight: 600; }
 
-/* ── Tab Navigation ────────────────────────────────────────── */
 .tab-btn {
   background:    transparent;
   border:        2px solid rgba(255,255,255,0.25);
@@ -434,14 +416,12 @@ label { font-weight: 500; font-size: 0.88rem; color: rgba(255,255,255,0.85); mar
   box-shadow:   0 4px 15px rgba(240,147,251,0.35);
 }
 
-/* ── Spinner Overlay ───────────────────────────────────────── */
 .loading-spinner {
   text-align: center;
   padding: 3rem 1rem;
 }
 .loading-spinner .spinner-border { width: 3rem; height: 3rem; }
 
-/* ── Auth page wrapper ─────────────────────────────────────── */
 .auth-page {
   min-height: 100vh;
   display:    flex;
@@ -451,7 +431,6 @@ label { font-weight: 500; font-size: 0.88rem; color: rgba(255,255,255,0.85); mar
 }
 .auth-card { width: 100%; max-width: 460px; padding: 2.4rem; }
 
-/* ── Page header strip ─────────────────────────────────────── */
 .page-header {
   padding:    90px 0 2rem;
   text-align: center;
@@ -459,7 +438,6 @@ label { font-weight: 500; font-size: 0.88rem; color: rgba(255,255,255,0.85); mar
 .page-header h1 { font-size: 2rem; font-weight: 800; margin-bottom: 0.4rem; }
 .page-header p  { color: rgba(255,255,255,0.70); font-size: 0.95rem; }
 
-/* ── Footer ────────────────────────────────────────────────── */
 footer {
   background:  rgba(0,0,0,0.18);
   padding:     3rem 0 1.5rem;
@@ -472,7 +450,6 @@ footer a:hover { text-decoration: underline; }
   margin: 2rem 0 1.2rem;
 }
 
-/* ── Empty State ───────────────────────────────────────────── */
 .empty-state {
   text-align: center;
   padding:    3rem 1rem;
@@ -480,7 +457,6 @@ footer a:hover { text-decoration: underline; }
 .empty-state .empty-icon { font-size: 3.5rem; margin-bottom: 1rem; display: block; }
 .empty-state p { color: rgba(255,255,255,0.65); font-size: 0.95rem; }
 
-/* ── Animations ────────────────────────────────────────────── */
 .fade-in {
   opacity:    0;
   transform:  translateY(28px);
@@ -501,7 +477,6 @@ footer a:hover { text-decoration: underline; }
   50%       { opacity: 0.6; }
 }
 
-/* ── Responsive ────────────────────────────────────────────── */
 @media (max-width: 991px) {
   .sidebar {
     min-height: auto;
